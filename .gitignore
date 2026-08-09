@@ -108,3 +108,6 @@ InitTestScene*.unity*
 
 # Local agent guidance for this workspace
 /agents.md
+
+# Local current-task tracking
+/CURRENT_TASK.md
