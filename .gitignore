@@ -115,4 +115,5 @@ InitTestScene*.unity*
 # Local tutorial learning outline
 /plan.md
 
-/Plugins
+/Assets/Plugins/
+/Assets/Plugins.meta

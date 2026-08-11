@@ -40,6 +40,12 @@ public class PlayerInteraction : MonoBehaviour
             currentTeaStation = null;
             Debug.Log("离开茶站");
         }
+        else if (other.gameObject.name == "Customer")
+        {
+            nearCustomer = false;
+            currentCustomer = null;
+            Debug.Log("离开顾客");
+        }
     }
 
     public void OnInteract(InputValue value)
