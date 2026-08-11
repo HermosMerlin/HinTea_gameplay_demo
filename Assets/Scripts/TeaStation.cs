@@ -3,6 +3,7 @@ using UnityEngine;
 public class TeaStation : MonoBehaviour
 {
     [SerializeField] private int water = 3;
+    public int Water => water;
     private bool isReady = false;
 
     public bool Interact()

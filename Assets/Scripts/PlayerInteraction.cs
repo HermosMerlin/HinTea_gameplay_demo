@@ -6,6 +6,7 @@ public class PlayerInteraction : MonoBehaviour
     private bool nearTeaStation, nearCustomer;
     private bool haveTea;
     private int money;
+    public int Money => money;
     private TeaStation currentTeaStation;
     private Customer currentCustomer;
 
