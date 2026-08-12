@@ -10,7 +10,7 @@ public class TeaStation : MonoBehaviour
     {
         if (isReady)
         {
-            Debug.Log($"出茶一份,水剩余{water}份");
+            ToastSystem.Show($"Tea ready, water left: {water}");
             isReady = false;
             return true;
         }
@@ -19,11 +19,11 @@ public class TeaStation : MonoBehaviour
         {
             water--;
             isReady = true;
-            Debug.Log($"制茶中,水剩余{water}份");
+            ToastSystem.Show($"Brewing tea, water left: {water}");
         }
         else
         {
-            Debug.Log("水已耗尽");
+            ToastSystem.Show("Water depleted");
         }
 
         return false;

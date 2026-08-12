@@ -41,14 +41,14 @@ public class PlayerInteraction : MonoBehaviour
             UpdateInteractTarget(InteractionTargetType.TeaStation);
             nearTeaStation = true;
             currentTeaStation = teaStation;
-            Debug.Log("靠近茶站，可以按 E 交互");
+            ToastSystem.Show("Near tea station, press E");
         }
         else if (other.TryGetComponent<Customer>(out var customer))
         {
             UpdateInteractTarget(InteractionTargetType.Customer);
             nearCustomer = true;
             currentCustomer = customer;
-            Debug.Log("靠近顾客，按E交互");
+            ToastSystem.Show("Near customer, press E");
         }
     }
 
@@ -67,7 +67,7 @@ public class PlayerInteraction : MonoBehaviour
                 UpdateInteractTarget(InteractionTargetType.None);
             }
             currentTeaStation = null;
-            Debug.Log("离开茶站");
+            ToastSystem.Show("Left tea station");
         }
         else if (other.gameObject.name == "Customer")
         {
@@ -81,7 +81,7 @@ public class PlayerInteraction : MonoBehaviour
                 UpdateInteractTarget(InteractionTargetType.None);
             }
             currentCustomer = null;
-            Debug.Log("离开顾客");
+            ToastSystem.Show("Left customer");
         }
     }
 
@@ -95,16 +95,16 @@ public class PlayerInteraction : MonoBehaviour
         {
             if (haveTea == true)
             {
-                Debug.Log("茶已经取过了");
+                ToastSystem.Show("Tea already in hand");
             }
             else if (haveTea == false)
             {
-                Debug.Log("开始与茶站交互");
+                ToastSystem.Show("Interacting with tea station");
                 bool gotTea = currentTeaStation.Interact();
                 if (gotTea == true)
                 {
                     haveTea = true;
-                    Debug.Log("取茶成功");
+                    ToastSystem.Show("Tea acquired");
                 }
             }
         }
@@ -112,22 +112,22 @@ public class PlayerInteraction : MonoBehaviour
         {
             if (haveTea == true)
             {
-                Debug.Log("交付茶");
+                ToastSystem.Show("Delivering tea");
                 bool completed = currentCustomer.OfferTea();
                 if (completed == true)
                 {
                     haveTea = false;
                     money += DeliveryReward;
-                    Debug.Log($"订单完成，获得 {DeliveryReward} 金钱，当前金钱：{money}");
+                    ToastSystem.Show($"Order complete, +{DeliveryReward} coins, total {money}");
                 }
                 else
                 {
-                    Debug.Log("该顾客已经完成订单");
+                    ToastSystem.Show("Customer already served");
                 }
             }
             else
             {
-                Debug.Log("未取茶");
+                ToastSystem.Show("No tea in hand");
             }
         }
     }
