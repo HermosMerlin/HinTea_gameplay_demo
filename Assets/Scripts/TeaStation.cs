@@ -8,25 +8,24 @@ public class TeaStation : MonoBehaviour
 
     public bool Interact()
     {
-        if (isReady == true)
+        if (isReady)
         {
             Debug.Log($"出茶一份,水剩余{water}份");
             isReady = false;
             return true;
         }
-        else if (isReady == false)
+
+        if (water > 0)
         {
-            if (water > 0)
-            {
-                water--;
-                isReady = true;
-                Debug.Log($"制茶中,水剩余{water}份");
-            }
-            else
-            {
-                Debug.Log("水已耗尽");
-            }
+            water--;
+            isReady = true;
+            Debug.Log($"制茶中,水剩余{water}份");
         }
+        else
+        {
+            Debug.Log("水已耗尽");
+        }
+
         return false;
     }
 

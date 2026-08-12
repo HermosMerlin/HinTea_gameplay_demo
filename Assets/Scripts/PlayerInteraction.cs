@@ -3,30 +3,51 @@ using UnityEngine.InputSystem;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    public enum InteractionTargetType
+    {
+        None,
+        TeaStation,
+        Customer
+    }
+
     private bool nearTeaStation, nearCustomer;
+    private InteractionTargetType interactTarget;
     private bool haveTea;
     private int money;
+    private const int DeliveryReward = 10;
     public int Money => money;
     private TeaStation currentTeaStation;
     private Customer currentCustomer;
+    [SerializeField] private InteractionPromptView interactText;
 
     void Awake()
     {
         haveTea = false;
         money = 0;
+        interactTarget = InteractionTargetType.None;
+        nearTeaStation = false;
+        nearCustomer = false;
+        Debug.Assert(interactText != null, "InteractText disconnect");
+    }
+    private void UpdateInteractTarget(InteractionTargetType type)
+    {
+        interactTarget = type;
+        interactText.UpdatePrompt(interactTarget);
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.name == "TeaStation")
+        if (other.TryGetComponent<TeaStation>(out var teaStation))
         {
+            UpdateInteractTarget(InteractionTargetType.TeaStation);
             nearTeaStation = true;
-            currentTeaStation = other.GetComponent<TeaStation>();
+            currentTeaStation = teaStation;
             Debug.Log("靠近茶站，可以按 E 交互");
         }
-        else if (other.gameObject.name == "Customer")
+        else if (other.TryGetComponent<Customer>(out var customer))
         {
+            UpdateInteractTarget(InteractionTargetType.Customer);
             nearCustomer = true;
-            currentCustomer = other.GetComponent<Customer>();
+            currentCustomer = customer;
             Debug.Log("靠近顾客，按E交互");
         }
     }
@@ -37,12 +58,28 @@ public class PlayerInteraction : MonoBehaviour
         if (other.gameObject.name == "TeaStation")
         {
             nearTeaStation = false;
+            if (nearCustomer)
+            {
+                UpdateInteractTarget(InteractionTargetType.Customer);
+            }
+            else
+            {
+                UpdateInteractTarget(InteractionTargetType.None);
+            }
             currentTeaStation = null;
             Debug.Log("离开茶站");
         }
         else if (other.gameObject.name == "Customer")
         {
             nearCustomer = false;
+            if (nearTeaStation)
+            {
+                UpdateInteractTarget(InteractionTargetType.TeaStation);
+            }
+            else
+            {
+                UpdateInteractTarget(InteractionTargetType.None);
+            }
             currentCustomer = null;
             Debug.Log("离开顾客");
         }
@@ -50,7 +87,11 @@ public class PlayerInteraction : MonoBehaviour
 
     public void OnInteract(InputValue value)
     {
-        if (nearTeaStation && value.isPressed)
+        if (!value.isPressed)
+        {
+            return;
+        }
+        if (interactTarget == InteractionTargetType.TeaStation)
         {
             if (haveTea == true)
             {
@@ -67,7 +108,7 @@ public class PlayerInteraction : MonoBehaviour
                 }
             }
         }
-        else if (nearCustomer && value.isPressed)
+        else if (interactTarget == InteractionTargetType.Customer && value.isPressed)
         {
             if (haveTea == true)
             {
@@ -76,8 +117,8 @@ public class PlayerInteraction : MonoBehaviour
                 if (completed == true)
                 {
                     haveTea = false;
-                    money += 10;
-                    Debug.Log($"订单完成，获得 10 金钱，当前金钱：{money}");
+                    money += DeliveryReward;
+                    Debug.Log($"订单完成，获得 {DeliveryReward} 金钱，当前金钱：{money}");
                 }
                 else
                 {
